@@ -4,6 +4,7 @@ import { motion, Variants } from "framer-motion";
 import { Github, Linkedin, Instagram, Mail, MapPin, Gamepad2, Dumbbell } from "lucide-react";
 import { personalInfo } from "../data/projects";
 import Link from "next/link"; 
+import MagneticElement from "./MagneticElement"; // <-- Added Magnetic Physics Import
 
 export default function Hero() {
   const containerVariants: Variants = {
@@ -24,7 +25,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="min-h-screen flex flex-col justify-center px-8 md:px-24 bg-[#0a0a0a] text-white overflow-hidden relative">
+    <section className="min-h-screen flex flex-col justify-center px-8 md:px-24 bg-transparent text-white overflow-hidden relative">
       {/* Background Graphic Element */}
       <motion.div 
         initial={{ opacity: 0, scale: 0.8 }}
@@ -47,12 +48,11 @@ export default function Hero() {
             <MapPin size={14} /> {personalInfo.location}
           </span>
           
-          {/* FIXED: Gym Rat Badge Link Structure */}
           <Link href="/gym" className="inline-block">
             <motion.div 
               whileHover={{ scale: 1.05, backgroundColor: "#ffffff", color: "#f87171" }} 
               whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-1 bg-white/10 px-3 py-1 rounded-full text-red-400 cursor-pointer transition-colors"
+              className="flex items-center gap-1 bg-white/10 px-3 py-1 rounded-full text-red-400 cursor-none transition-colors"
             >
               <Dumbbell size={14} /> Gym Rat
             </motion.div>
@@ -82,34 +82,36 @@ export default function Hero() {
             {personalInfo.role}. I build data-driven systems, secure architectures, and immersive digital experiences.
         </motion.h2>
 
-        {/* Social Icons with highly dynamic hover effects */}
+        {/* Social Icons with MAGNETIC PHYSICS */}
         <motion.div variants={itemVariants} className="flex gap-6">
-          <SocialIcon href={personalInfo.socials.github} icon={<Github size={28} />} label="GitHub" hoverColor="hover:text-gray-300" />
-          <SocialIcon href={personalInfo.socials.linkedin} icon={<Linkedin size={28} />} label="LinkedIn" hoverColor="hover:text-blue-500" />
-          <SocialIcon href={personalInfo.socials.instagram} icon={<Instagram size={28} />} label="Instagram" hoverColor="hover:text-pink-500" />
-          <SocialIcon href={`mailto:${personalInfo.email}`} icon={<Mail size={28} />} label="Email" hoverColor="hover:text-green-400" />
+          <SocialIcon href={personalInfo.socials.github} icon={<Github size={24} />} label="GitHub" hoverColor="hover:text-gray-300 hover:border-gray-300" />
+          <SocialIcon href={personalInfo.socials.linkedin} icon={<Linkedin size={24} />} label="LinkedIn" hoverColor="hover:text-blue-500 hover:border-blue-500" />
+          <SocialIcon href={personalInfo.socials.instagram} icon={<Instagram size={24} />} label="Instagram" hoverColor="hover:text-pink-500 hover:border-pink-500" />
+          <SocialIcon href={`mailto:${personalInfo.email}`} icon={<Mail size={24} />} label="Email" hoverColor="hover:text-green-400 hover:border-green-400" />
         </motion.div>
       </motion.div>
     </section>
   );
 }
 
+// Re-engineered Social Icon with Magnetic Wrapper
 function SocialIcon({ href, icon, label, hoverColor }: { href: string, icon: React.ReactNode, label: string, hoverColor: string }) {
   return (
-    <motion.a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={label}
-      className={`text-gray-500 transition-colors duration-300 ${hoverColor}`}
-      whileHover={{ 
-        scale: 1.2, 
-        rotate: [0, -10, 10, -10, 0], 
-        transition: { duration: 0.3 }
-      }}
-      whileTap={{ scale: 0.9 }} 
-    >
-      {icon}
-    </motion.a>
+    <MagneticElement>
+      <motion.a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={label}
+        className={`text-gray-500 flex items-center justify-center p-4 rounded-full bg-white/5 border border-white/10 transition-colors duration-300 ${hoverColor} cursor-none`}
+        whileHover={{ 
+          scale: 1.15, 
+          transition: { duration: 0.2 }
+        }}
+        whileTap={{ scale: 0.9 }} 
+      >
+        {icon}
+      </motion.a>
+    </MagneticElement>
   );
 }

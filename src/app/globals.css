@@ -24,3 +24,55 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@media (min-width: 768px) {
+  body, a, button {
+    cursor: none !important;
+  }
+}
+/* CYBER GLITCH HOVER EFFECT */
+.glitch-hover {
+  position: relative;
+}
+
+.glitch-hover::before,
+.glitch-hover::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.group:hover .glitch-hover::before {
+  animation: glitch-anim 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+  color: #0ff; /* Cyan */
+  z-index: -1;
+}
+
+.group:hover .glitch-hover::after {
+  animation: glitch-anim-2 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
+  color: #f00; /* Red */
+  z-index: -2;
+}
+
+@keyframes glitch-anim {
+  0% { transform: translate(0) }
+  20% { transform: translate(-2px, 2px) }
+  40% { transform: translate(-2px, -2px) }
+  60% { transform: translate(2px, 2px) }
+  80% { transform: translate(2px, -2px) }
+  100% { transform: translate(0) }
+}
+
+@keyframes glitch-anim-2 {
+  0% { transform: translate(0) }
+  20% { transform: translate(2px, -2px) }
+  40% { transform: translate(2px, 2px) }
+  60% { transform: translate(-2px, -2px) }
+  80% { transform: translate(-2px, 2px) }
+  100% { transform: translate(0) }
+}
