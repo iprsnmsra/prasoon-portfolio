@@ -17,27 +17,28 @@ export default function FluidBackground() {
     canvas.height = height;
 
     let particles: Particle[] = [];
-    
-    // Track mouse for physics displacement
+
     const mouse = { x: -1000, y: -1000, radius: 150 };
 
-    window.addEventListener("mousemove", (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       mouse.x = e.x;
       mouse.y = e.y;
-    });
-
-    window.addEventListener("mouseout", () => {
+    };
+    const handleMouseOut = () => {
       mouse.x = -1000;
       mouse.y = -1000;
-    });
-
-    window.addEventListener("resize", () => {
+    };
+    const handleResize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = width;
       canvas.height = height;
       init();
-    });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseout", handleMouseOut);
+    window.addEventListener("resize", handleResize);
 
     class Particle {
       x: number; y: number;
@@ -46,15 +47,11 @@ export default function FluidBackground() {
       color: string;
 
       constructor(x: number, y: number) {
-        this.x = x;
-        this.y = y;
-        this.baseX = x;
-        this.baseY = y;
-        this.size = Math.random() * 2 + 1;
-        this.density = (Math.random() * 30) + 1;
-        
-        // Randomly assign theme colors (Red, Orange, Dark Grey)
-        const colors = ['#f97316', '#ef4444', '#333333'];
+        this.x = x; this.y = y;
+        this.baseX = x; this.baseY = y;
+        this.size = Math.random() * 1.5 + 0.5;
+        this.density = Math.random() * 30 + 1;
+        const colors = ["#000000", "#555555", "#999999", "#cccccc"];
         this.color = colors[Math.floor(Math.random() * colors.length)];
       }
 
@@ -68,60 +65,43 @@ export default function FluidBackground() {
       }
 
       update() {
-        // Physics: Calculate distance between mouse and particle
-        let dx = mouse.x - this.x;
-        let dy = mouse.y - this.y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
-        let forceDirectionX = dx / distance;
-        let forceDirectionY = dy / distance;
-        
-        // Max distance, past that the force is 0
-        let maxDistance = mouse.radius;
-        let force = (maxDistance - distance) / maxDistance;
-        let directionX = forceDirectionX * force * this.density;
-        let directionY = forceDirectionY * force * this.density;
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const forceDirectionX = dx / distance;
+        const forceDirectionY = dy / distance;
+        const maxDistance = mouse.radius;
+        const force = (maxDistance - distance) / maxDistance;
+        const directionX = forceDirectionX * force * this.density;
+        const directionY = forceDirectionY * force * this.density;
 
         if (distance < mouse.radius) {
-          // Push particles away like fluid
           this.x -= directionX;
           this.y -= directionY;
         } else {
-          // Spring back to original position
-          if (this.x !== this.baseX) {
-            let dx = this.x - this.baseX;
-            this.x -= dx / 20;
-          }
-          if (this.y !== this.baseY) {
-            let dy = this.y - this.baseY;
-            this.y -= dy / 20;
-          }
+          if (this.x !== this.baseX) { const dx2 = this.x - this.baseX; this.x -= dx2 / 20; }
+          if (this.y !== this.baseY) { const dy2 = this.y - this.baseY; this.y -= dy2 / 20; }
         }
       }
     }
 
     function init() {
       particles = [];
-      // Calculate how many particles to spawn based on screen size
-      const numberOfParticles = (canvas!.width * canvas!.height) / 9000;
+      const numberOfParticles = (canvas!.width * canvas!.height) / 12000;
       for (let i = 0; i < numberOfParticles; i++) {
-        let x = Math.random() * width;
-        let y = Math.random() * height;
-        particles.push(new Particle(x, y));
+        particles.push(new Particle(Math.random() * width, Math.random() * height));
       }
     }
 
     function connect() {
       if (!ctx) return;
-      let opacityValue = 1;
       for (let a = 0; a < particles.length; a++) {
         for (let b = a; b < particles.length; b++) {
-          let distance = ((particles[a].x - particles[b].x) * (particles[a].x - particles[b].x))
-                       + ((particles[a].y - particles[b].y) * (particles[a].y - particles[b].y));
-          
-          if (distance < 3000) {
-            opacityValue = 1 - (distance / 3000);
-            ctx.strokeStyle = `rgba(255, 255, 255, ${opacityValue * 0.1})`;
-            ctx.lineWidth = 1;
+          const distance = (particles[a].x - particles[b].x) ** 2 + (particles[a].y - particles[b].y) ** 2;
+          if (distance < 2500) {
+            const opacityValue = 1 - distance / 2500;
+            ctx.strokeStyle = `rgba(0, 0, 0, ${opacityValue * 0.06})`;
+            ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(particles[a].x, particles[a].y);
             ctx.lineTo(particles[b].x, particles[b].y);
@@ -134,10 +114,7 @@ export default function FluidBackground() {
     function animate() {
       if (!ctx) return;
       ctx.clearRect(0, 0, width, height);
-      for (let i = 0; i < particles.length; i++) {
-        particles[i].draw();
-        particles[i].update();
-      }
+      for (let i = 0; i < particles.length; i++) { particles[i].draw(); particles[i].update(); }
       connect();
       requestAnimationFrame(animate);
     }
@@ -145,12 +122,12 @@ export default function FluidBackground() {
     init();
     animate();
 
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseout", handleMouseOut);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
-  return (
-    <canvas 
-      ref={canvasRef} 
-      className="fixed inset-0 z-0 pointer-events-none opacity-40 mix-blend-screen"
-    />
-  );
+  return <canvas ref={canvasRef} className="fixed inset-0 z-0 pointer-events-none opacity-30" />;
 }

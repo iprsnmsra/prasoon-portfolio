@@ -2,34 +2,125 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111111;
+  --accent: #000000;
+  --muted: #666666;
+  --card: #f5f5f5;
+  --border: rgba(0, 0, 0, 0.1);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  /* NOTE: Do NOT add --font-pt-serif/caveat/jersey here — Next.js sets them
+     on the <html> element via class variables. Defining them in @theme inline
+     creates circular :root overrides that break the font system. */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Custom Font Utility Classes ─── */
+/* These read the CSS vars injected by next/font onto the <html> element */
+.font-pt-serif {
+  font-family: var(--font-pt-serif), 'PT Serif', Georgia, serif !important;
+}
+
+.font-caveat {
+  font-family: var(--font-caveat), 'Caveat', cursive !important;
+}
+
+.font-jersey {
+  font-family: var(--font-jersey), 'Jersey 20', cursive !important;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+/* Desktop custom cursor */
 @media (min-width: 768px) {
   body, a, button {
     cursor: none !important;
   }
 }
+
+/* 85% width container utility */
+.container-85 {
+  width: 85%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Geometric grid background */
+.geo-grid {
+  background-image:
+    linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Subtle border glow animation */
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(0, 0, 0, 0.1); }
+  50% { border-color: rgba(0, 0, 0, 0.3); }
+}
+
+.animate-border-glow {
+  animation: border-glow 3s ease-in-out infinite;
+}
+
+/* Pulse dot for status indicators */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.5); }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Text shimmer effect - dark version */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.text-shimmer {
+  background: linear-gradient(90deg, #000 0%, #666 50%, #000 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
 /* CYBER GLITCH HOVER EFFECT */
 .glitch-hover {
   position: relative;
@@ -49,13 +140,13 @@ body {
 
 .group:hover .glitch-hover::before {
   animation: glitch-anim 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
-  color: #0ff; /* Cyan */
+  color: #555;
   z-index: -1;
 }
 
 .group:hover .glitch-hover::after {
   animation: glitch-anim-2 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
-  color: #f00; /* Red */
+  color: #999;
   z-index: -2;
 }
 
@@ -76,3 +167,180 @@ body {
   80% { transform: translate(-2px, 2px) }
   100% { transform: translate(0) }
 }
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Line scan effect */
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+.scanline::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.03);
+  animation: scanline 8s linear infinite;
+}
+
+/* ===== MANGA STYLE DECORATIONS ===== */
+
+/* Manga brush stroke divider */
+.manga-brush-divider {
+  position: relative;
+  height: 8px;
+  width: 100%;
+}
+
+.manga-brush-divider::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(0,0,0,0.15) 10%, 
+    rgba(0,0,0,0.4) 30%, 
+    rgba(0,0,0,0.6) 50%, 
+    rgba(0,0,0,0.4) 70%, 
+    rgba(0,0,0,0.15) 90%, 
+    transparent 100%
+  );
+  border-radius: 2px;
+}
+
+/* Manga panel border */
+.manga-panel {
+  border: 2px solid rgba(0,0,0,0.15);
+  position: relative;
+}
+
+.manga-panel::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Ink dot decoration */
+.ink-dot {
+  position: relative;
+}
+
+.ink-dot::before {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 50%;
+  top: -8px;
+  right: -4px;
+}
+
+.ink-dot::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(0,0,0,0.1);
+  border-radius: 50%;
+  top: -12px;
+  right: -10px;
+}
+
+/* Manga corner brackets */
+.manga-corners {
+  position: relative;
+}
+
+.manga-corners::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 20px;
+  height: 20px;
+  border-top: 2px solid rgba(0,0,0,0.2);
+  border-left: 2px solid rgba(0,0,0,0.2);
+  pointer-events: none;
+}
+
+.manga-corners::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 20px;
+  height: 20px;
+  border-bottom: 2px solid rgba(0,0,0,0.2);
+  border-right: 2px solid rgba(0,0,0,0.2);
+  pointer-events: none;
+}
+
+/* ─── Floating Background Icons ─── */
+@keyframes float-icon-1 {
+  0%   { transform: translate(0px, 0px) rotate(0deg); }
+  25%  { transform: translate(18px, -22px) rotate(8deg); }
+  50%  { transform: translate(-10px, -40px) rotate(-5deg); }
+  75%  { transform: translate(25px, -20px) rotate(10deg); }
+  100% { transform: translate(0px, 0px) rotate(0deg); }
+}
+
+@keyframes float-icon-2 {
+  0%   { transform: translate(0px, 0px) rotate(0deg); }
+  30%  { transform: translate(-25px, -18px) rotate(-10deg); }
+  60%  { transform: translate(15px, -35px) rotate(6deg); }
+  100% { transform: translate(0px, 0px) rotate(0deg); }
+}
+
+@keyframes float-icon-3 {
+  0%   { transform: translate(0px, 0px) rotate(0deg); }
+  20%  { transform: translate(12px, -28px) rotate(-6deg); }
+  50%  { transform: translate(-18px, -15px) rotate(12deg); }
+  80%  { transform: translate(8px, -35px) rotate(-4deg); }
+  100% { transform: translate(0px, 0px) rotate(0deg); }
+}
+
+@keyframes float-icon-4 {
+  0%   { transform: translate(0px, 0px) rotate(0deg); }
+  40%  { transform: translate(-15px, -30px) rotate(8deg); }
+  70%  { transform: translate(20px, -12px) rotate(-8deg); }
+  100% { transform: translate(0px, 0px) rotate(0deg); }
+}
+
+.bg-float-icon {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.08;
+  user-select: none;
+  color: #000000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-float-icon:nth-child(4n+1) { animation: float-icon-1 9s ease-in-out infinite; }
+.bg-float-icon:nth-child(4n+2) { animation: float-icon-2 11s ease-in-out infinite; }
+.bg-float-icon:nth-child(4n+3) { animation: float-icon-3 8s ease-in-out infinite; }
+.bg-float-icon:nth-child(4n)   { animation: float-icon-4 13s ease-in-out infinite; }

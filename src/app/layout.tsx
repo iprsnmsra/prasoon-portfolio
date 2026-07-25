@@ -1,40 +1,75 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Inter, JetBrains_Mono, PT_Serif, Caveat, Jersey_20 } from "next/font/google";
 
-// 1. Double check these paths! If they have red lines, make sure the files exist in src/components/
-import CustomCursor from "@/components/CustomCursor";   
-import BootSequence from "@/components/BootSequence"; 
+import CustomCursor from "@/components/CustomCursor";
+import BootSequence from "@/components/BootSequence";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains",
+  display: "swap",
+});
+
+const ptSerif = PT_Serif({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-pt-serif",
+  display: "swap",
+});
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-caveat",
+  display: "swap",
+});
+
+const jersey20 = Jersey_20({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-jersey",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "Prasoon Mishra | prsnmsra | Full-Stack & Game Developer",
-  description: "The digital portfolio of Prasoon Mishra (prsnmsra). Exploring scalable MERN architectures, 3D game environments, and AI-driven cybersecurity systems.",
+  title: "Prasoon Mishra — Full-Stack Developer & Competitive Programmer",
+  description:
+    "Portfolio of Prasoon Mishra. Full-Stack Developer, C++ Competitive Programmer, and Google Gemini Student Ambassador building scalable systems and solving algorithmic challenges.",
   keywords: [
-    "Prasoon Mishra", 
-    "prsnmsra", 
-    "Full-Stack Developer", 
-    "MERN Stack", 
-    "Game Developer", 
-    "VIT Bhopal", 
-    "Unity", 
-    "Blender",
-    "Cybersecurity", 
-    "Lucknow",
-    "MERN Matrix Club",
-    "Software Engineer"
+    "Prasoon Mishra",
+    "prsnmsra",
+    "Full-Stack Developer",
+    "Competitive Programming",
+    "C++ Grandmaster",
+    "DSA",
+    "MERN Stack",
+    "Google Gemini Ambassador",
+    "HackerRank Ambassador",
+    "VIT Bhopal",
+    "Software Engineer",
+    "Codeforces",
+    "CodeChef",
+    "LeetCode",
   ],
   authors: [{ name: "Prasoon Mishra" }],
   creator: "Prasoon Mishra",
-  // verification: {
-  //   google: "PASTE_YOUR_COPIED_CODE_HERE", // Keep your Google code here if you have it!
-  // },
   openGraph: {
-    title: "Prasoon Mishra | prsnmsra",
-    description: "Full-Stack Developer, Game Enthusiast, and Cybersecurity innovator.",
+    title: "Prasoon Mishra — Developer & Competitive Programmer",
+    description:
+      "Full-Stack Developer, C++ Competitive Programmer, and Community Leader.",
     url: "https://prsnmsra.vercel.app",
-    siteName: "Prasoon Mishra Portfolio",
+    siteName: "Prasoon Mishra",
     images: [
       {
-        url: "/iamp.jpg", 
+        url: "/iamp.jpg",
         width: 800,
         height: 600,
         alt: "Prasoon Mishra",
@@ -51,13 +86,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // 2. We add suppressHydrationWarning HERE to stop the LINER extension from breaking the page
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning> 
-      <body className="antialiased bg-[#0a0a0a] text-white" suppressHydrationWarning>
-        
-        <BootSequence /> 
-        <CustomCursor /> 
-        
+    <html
+      lang="en"
+      className={`scroll-smooth ${inter.variable} ${jetbrainsMono.variable} ${ptSerif.variable} ${caveat.variable} ${jersey20.variable}`}
+      suppressHydrationWarning
+    >
+      <body
+        className="antialiased bg-white text-black font-[var(--font-inter)]"
+        suppressHydrationWarning
+      >
+        <BootSequence />
+        <CustomCursor />
         {children}
       </body>
     </html>
