@@ -4,6 +4,7 @@ import { motion, Variants } from "framer-motion";
 import { Github, Linkedin, Mail, ArrowDown } from "lucide-react";
 import { personalInfo } from "../data/projects";
 import MagneticElement from "./MagneticElement";
+import myImage from './assets/99.jpg';
 
 export default function Hero() {
   const containerVariants: Variants = {
@@ -104,8 +105,8 @@ export default function Hero() {
           <div className="relative flex-shrink-0 manga-corners">
             <div className="w-[260px] h-[340px] bg-[#f5f5f5] border-2 border-black/10 rounded-2xl flex items-center justify-center overflow-hidden group hover:border-black/25 transition-all duration-300">
               <img
-                src="assets/99.jpeg" 
-                alt="Description of image" 
+                src={myImage} 
+                alt="Profile"
                 className="w-full h-full object-cover" 
                  />
              </div>
