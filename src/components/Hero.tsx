@@ -4,7 +4,7 @@ import { motion, Variants } from "framer-motion";
 import { Github, Linkedin, Mail, ArrowDown } from "lucide-react";
 import { personalInfo } from "../data/projects";
 import MagneticElement from "./MagneticElement";
-import myImage from './assets/99.jpg';
+import img99 from './assets/99.jpg';
 
 export default function Hero() {
   const containerVariants: Variants = {
@@ -101,16 +101,17 @@ export default function Hero() {
           variants={itemVariants}
           className="mt-24 flex flex-col md:flex-row items-center gap-8 md:gap-12"
         >
-          {/* Image placeholder */}
-          <div className="relative flex-shrink-0 manga-corners">
-            <div className="w-[260px] h-[340px] bg-[#f5f5f5] border-2 border-black/10 rounded-2xl flex items-center justify-center overflow-hidden group hover:border-black/25 transition-all duration-300">
-              <img
-                src={myImage} 
-                alt="Profile"
-                className="w-full h-full object-cover" 
-                 />
-             </div>
-             </div>
+{/* Image */}
+<div className="relative flex-shrink-0 manga-corners">
+  <div className="w-[260px] h-[340px] bg-[#f5f5f5] border-2 border-black/10 rounded-2xl flex items-center justify-center overflow-hidden group hover:border-black/25 transition-all duration-300">
+    {/* eslint-disable-next-line @next/next/no-img-element */}
+    <img 
+      src={img99} 
+      alt="Profile" 
+      className="w-full h-full object-cover" 
+    />
+  </div>
+</div>
 
           {/* Cursive arrow SVG */}
           <div className="hidden md:block flex-shrink-0">
