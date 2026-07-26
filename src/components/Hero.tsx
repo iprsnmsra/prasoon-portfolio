@@ -48,7 +48,7 @@ export default function Hero() {
         <motion.div variants={itemVariants} className="flex items-center gap-3 mb-8">
           <div className="w-2 h-2 bg-black rounded-full animate-pulse-dot" />
           <span className="font-mono text-sm text-gray-500 uppercase tracking-[0.3em]">
-            Available for opportunities
+            OPEN FOR WORK IN SOFTWARE ENGINEERING ROLES
           </span>
         </motion.div>
 
@@ -84,7 +84,7 @@ export default function Hero() {
             whileTap={{ scale: 0.97 }}
             className="font-jersey flex items-center gap-3 border border-black/30 px-8 py-3 rounded-full text-base uppercase tracking-widest transition-all duration-300 text-black"
           >
-            View My Work
+            EXPLORE ME
             <ArrowDown size={16} />
           </motion.a>
 
@@ -103,13 +103,13 @@ export default function Hero() {
           {/* Image placeholder */}
           <div className="relative flex-shrink-0 manga-corners">
             <div className="w-[260px] h-[340px] bg-[#f5f5f5] border-2 border-black/10 rounded-2xl flex items-center justify-center overflow-hidden group hover:border-black/25 transition-all duration-300">
-              <div className="text-center text-gray-400 font-mono text-sm">
-                <div className="text-5xl mb-3">📸</div>
-                <p className="font-bold">Your Photo Here</p>
-                <p className="text-xs mt-1 text-gray-300">(260 × 340)</p>
-              </div>
-            </div>
-          </div>
+              <img
+                src="./assets/99.jpeg" 
+                alt="Description of image" 
+                className="w-full h-full object-cover" 
+                 />
+             </div>
+             </div>
 
           {/* Cursive arrow SVG */}
           <div className="hidden md:block flex-shrink-0">
