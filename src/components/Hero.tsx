@@ -4,7 +4,7 @@ import { motion, Variants } from "framer-motion";
 import { Github, Linkedin, Mail, ArrowDown } from "lucide-react";
 import { personalInfo } from "../data/projects";
 import MagneticElement from "./MagneticElement";
-import img99 from './assets/99.jpg';
+import img99 from './assets/99.jpeg';
 
 export default function Hero() {
   const containerVariants: Variants = {
