@@ -7,6 +7,7 @@ import { Resource } from '@/lib/types'
 export async function getResources(): Promise<{ success: boolean; error?: string; data?: Resource[] }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { data, error } = await supabase.from('resources').select('*').order('display_order', { ascending: true })
 
     if (error) throw error
@@ -20,6 +21,7 @@ export async function getResources(): Promise<{ success: boolean; error?: string
 export async function createResource(formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('resources').insert({
       title: formData.get('title'),
       file_url: formData.get('file_url'),
@@ -38,6 +40,7 @@ export async function createResource(formData: FormData): Promise<{ success: boo
 export async function updateResource(id: string, formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('resources').update({
       title: formData.get('title'),
       file_url: formData.get('file_url'),
@@ -56,6 +59,7 @@ export async function updateResource(id: string, formData: FormData): Promise<{ 
 export async function deleteResource(id: string): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('resources').delete().eq('id', id)
 
     if (error) throw error
@@ -66,3 +70,4 @@ export async function deleteResource(id: string): Promise<{ success: boolean; er
     return { success: false, error: error.message }
   }
 }
+

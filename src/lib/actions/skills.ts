@@ -7,6 +7,7 @@ import { Skill } from '@/lib/types'
 export async function getSkills(): Promise<{ success: boolean; error?: string; data?: Skill[] }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { data, error } = await supabase.from('skills').select('*').order('display_order', { ascending: true })
 
     if (error) throw error
@@ -20,6 +21,7 @@ export async function getSkills(): Promise<{ success: boolean; error?: string; d
 export async function createSkill(formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('skills').insert({
       name: formData.get('name'),
       icon_url: formData.get('icon_url'),
@@ -38,6 +40,7 @@ export async function createSkill(formData: FormData): Promise<{ success: boolea
 export async function updateSkill(id: string, formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('skills').update({
       name: formData.get('name'),
       icon_url: formData.get('icon_url'),
@@ -56,6 +59,7 @@ export async function updateSkill(id: string, formData: FormData): Promise<{ suc
 export async function deleteSkill(id: string): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('skills').delete().eq('id', id)
 
     if (error) throw error
@@ -66,3 +70,4 @@ export async function deleteSkill(id: string): Promise<{ success: boolean; error
     return { success: false, error: error.message }
   }
 }
+

@@ -7,6 +7,7 @@ import { Certification } from '@/lib/types'
 export async function getCertifications(): Promise<{ success: boolean; error?: string; data?: Certification[] }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { data, error } = await supabase.from('certifications').select('*').order('display_order', { ascending: true })
 
     if (error) throw error
@@ -20,6 +21,7 @@ export async function getCertifications(): Promise<{ success: boolean; error?: s
 export async function createCertification(formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('certifications').insert({
       title: formData.get('title'),
       issuer: formData.get('issuer'),
@@ -41,6 +43,7 @@ export async function createCertification(formData: FormData): Promise<{ success
 export async function updateCertification(id: string, formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('certifications').update({
       title: formData.get('title'),
       issuer: formData.get('issuer'),
@@ -62,6 +65,7 @@ export async function updateCertification(id: string, formData: FormData): Promi
 export async function deleteCertification(id: string): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('certifications').delete().eq('id', id)
 
     if (error) throw error
@@ -72,3 +76,4 @@ export async function deleteCertification(id: string): Promise<{ success: boolea
     return { success: false, error: error.message }
   }
 }
+

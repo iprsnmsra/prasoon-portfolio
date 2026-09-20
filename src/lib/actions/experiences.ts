@@ -7,6 +7,7 @@ import { Experience } from '@/lib/types'
 export async function getExperiences(): Promise<{ success: boolean; error?: string; data?: Experience[] }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { data, error } = await supabase.from('experiences').select('*').order('display_order', { ascending: true })
 
     if (error) throw error
@@ -20,6 +21,7 @@ export async function getExperiences(): Promise<{ success: boolean; error?: stri
 export async function createExperience(formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('experiences').insert({
       company: formData.get('company'),
       role: formData.get('role'),
@@ -42,6 +44,7 @@ export async function createExperience(formData: FormData): Promise<{ success: b
 export async function updateExperience(id: string, formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('experiences').update({
       company: formData.get('company'),
       role: formData.get('role'),
@@ -64,6 +67,7 @@ export async function updateExperience(id: string, formData: FormData): Promise<
 export async function deleteExperience(id: string): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('experiences').delete().eq('id', id)
 
     if (error) throw error
@@ -74,3 +78,4 @@ export async function deleteExperience(id: string): Promise<{ success: boolean; 
     return { success: false, error: error.message }
   }
 }
+

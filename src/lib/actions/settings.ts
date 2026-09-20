@@ -15,6 +15,7 @@ export async function changePassword(formData: FormData): Promise<{ success: boo
     }
 
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     
     // 1. Get current hash from admin_settings table (Assuming id = 1 for the admin user)
     const { data: adminSetting, error: fetchError } = await supabase
@@ -53,6 +54,7 @@ export async function changePassword(formData: FormData): Promise<{ success: boo
 export async function getPersonalInfo(): Promise<{ success: boolean; error?: string; data?: PersonalInfo }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { data, error } = await supabase
       .from('personal_info')
       .select('*')
@@ -70,6 +72,7 @@ export async function getPersonalInfo(): Promise<{ success: boolean; error?: str
 export async function updatePersonalInfo(formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     
     const { error } = await supabase.from('personal_info').update({
       name: formData.get('name'),
@@ -90,3 +93,4 @@ export async function updatePersonalInfo(formData: FormData): Promise<{ success:
     return { success: false, error: error.message }
   }
 }
+

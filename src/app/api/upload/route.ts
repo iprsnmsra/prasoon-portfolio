@@ -17,6 +17,9 @@ export async function POST(request: Request) {
     }
 
     const supabase = createAdminClient();
+    if (!supabase) {
+      return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
+    }
     
     const ext = file.name.split('.').pop() || 'tmp';
     const filename = `${crypto.randomUUID()}.${ext}`;

@@ -10,20 +10,26 @@ export async function POST(request: Request) {
     }
 
     const supabase = createAdminClient();
-    const { data: settings } = await supabase
-      .from('admin_settings')
-      .select('*')
-      .eq('id', 1)
-      .single();
-
+    
     let isValid = false;
 
-    if (!settings) {
-      // Check against default password
-      const defaultPasswordHash = await hashPassword('Pr@s00n_CMS_2026!');
-      isValid = await verifyPassword(password, defaultPasswordHash);
+    if (!supabase) {
+      // Supabase not configured — check against default password directly
+      isValid = password === 'Pr@s00n_CMS_2026!';
     } else {
-      isValid = await verifyPassword(password, settings.password_hash);
+      const { data: settings } = await supabase
+        .from('admin_settings')
+        .select('*')
+        .eq('id', 1)
+        .single();
+
+      if (!settings) {
+        // No settings row — check against default password
+        const defaultPasswordHash = await hashPassword('Pr@s00n_CMS_2026!');
+        isValid = await verifyPassword(password, defaultPasswordHash);
+      } else {
+        isValid = await verifyPassword(password, settings.password_hash);
+      }
     }
 
     if (!isValid) {

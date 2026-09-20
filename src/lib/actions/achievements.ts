@@ -7,6 +7,7 @@ import { Achievement } from '@/lib/types'
 export async function getAchievements(): Promise<{ success: boolean; error?: string; data?: Achievement[] }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { data, error } = await supabase.from('achievements').select('*').order('display_order', { ascending: true })
 
     if (error) throw error
@@ -20,6 +21,7 @@ export async function getAchievements(): Promise<{ success: boolean; error?: str
 export async function createAchievement(formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('achievements').insert({
       type: formData.get('type'),
       title: formData.get('title'),
@@ -41,6 +43,7 @@ export async function createAchievement(formData: FormData): Promise<{ success: 
 export async function updateAchievement(id: string, formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('achievements').update({
       type: formData.get('type'),
       title: formData.get('title'),
@@ -62,6 +65,7 @@ export async function updateAchievement(id: string, formData: FormData): Promise
 export async function deleteAchievement(id: string): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createAdminClient()
+    if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('achievements').delete().eq('id', id)
 
     if (error) throw error
@@ -72,3 +76,4 @@ export async function deleteAchievement(id: string): Promise<{ success: boolean;
     return { success: false, error: error.message }
   }
 }
+
