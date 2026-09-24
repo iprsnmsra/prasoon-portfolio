@@ -20,13 +20,18 @@ export default function CustomCursor() {
 
   return (
     <>
+      {/* Center dot */}
       <motion.div
-        className="fixed top-0 left-0 w-2.5 h-2.5 bg-black rounded-full mix-blend-difference pointer-events-none z-[9999]"
-        animate={{ x: mousePosition.x - 5, y: mousePosition.y - 5, opacity: isVisible ? 1 : 0 }}
+        className="fixed top-0 left-0 w-3 h-3 bg-black rounded-full pointer-events-none z-[9999]"
+        animate={{ x: mousePosition.x - 6, y: mousePosition.y - 6, opacity: isVisible ? 1 : 0 }}
         transition={{ type: "tween", ease: "backOut", duration: 0.1 }}
+        style={{
+          boxShadow: '0 0 0 2px white'
+        }}
       />
+      {/* Outer circle */}
       <motion.div
-        className="fixed top-0 left-0 w-10 h-10 border border-black/30 rounded-full mix-blend-difference pointer-events-none z-[9998]"
+        className="fixed top-0 left-0 w-10 h-10 border-[1.5px] border-black rounded-full pointer-events-none z-[9998]"
         animate={{ x: mousePosition.x - 20, y: mousePosition.y - 20, opacity: isVisible ? 1 : 0 }}
         transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.5 }}
       />
