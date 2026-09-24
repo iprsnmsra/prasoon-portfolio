@@ -3,11 +3,12 @@
 import { createAdminClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import { Experience } from '@/lib/types'
+import { experiences as staticExperiences } from '@/data/projects'
 
 export async function getExperiences(): Promise<{ success: boolean; error?: string; data?: Experience[] }> {
   try {
     const supabase = createAdminClient()
-    if (!supabase) return { success: false, error: 'Supabase not configured' }
+    if (!supabase) return { success: true, data: staticExperiences.map((e, i) => ({ id: String(e.id), company: e.company, role: e.role, join_date: e.joinDate, description: e.description, logo_url: e.logoPlaceholder, image_url: e.imagePlaceholder, display_order: i })) as unknown as Experience[] }
     const { data, error } = await supabase.from('experiences').select('*').order('display_order', { ascending: true })
 
     if (error) throw error

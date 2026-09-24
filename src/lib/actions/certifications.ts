@@ -3,11 +3,12 @@
 import { createAdminClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import { Certification } from '@/lib/types'
+import { certifications as staticCerts } from '@/data/projects'
 
 export async function getCertifications(): Promise<{ success: boolean; error?: string; data?: Certification[] }> {
   try {
     const supabase = createAdminClient()
-    if (!supabase) return { success: false, error: 'Supabase not configured' }
+    if (!supabase) return { success: true, data: staticCerts.map((c, i) => ({ id: String(c.id), title: c.title, issuer: c.issuer, date: c.date, credential_url: c.credentialUrl, image_url: c.imageUrl, display_order: i })) as unknown as Certification[] }
     const { data, error } = await supabase.from('certifications').select('*').order('display_order', { ascending: true })
 
     if (error) throw error

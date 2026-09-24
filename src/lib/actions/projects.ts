@@ -3,11 +3,12 @@
 import { createAdminClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import { Project, ProjectCategory } from '@/lib/types'
+import { projectCategories as staticCategories, categoryProjects as staticCategoryProjects } from '@/data/projects'
 
 export async function getProjectCategories(): Promise<{ success: boolean; error?: string; data?: ProjectCategory[] }> {
   try {
     const supabase = createAdminClient()
-    if (!supabase) return { success: false, error: 'Supabase not configured' }
+    if (!supabase) return { success: true, data: staticCategories.map((c, i) => ({ id: c.id, title: c.title, description: c.description, icon: c.icon, display_order: i })) as unknown as ProjectCategory[] }
     const { data, error } = await supabase.from('project_categories').select('*').order('display_order', { ascending: true })
 
     if (error) throw error
@@ -21,7 +22,11 @@ export async function getProjectCategories(): Promise<{ success: boolean; error?
 export async function getProjects(categoryId?: string): Promise<{ success: boolean; error?: string; data?: Project[] }> {
   try {
     const supabase = createAdminClient()
-    if (!supabase) return { success: false, error: 'Supabase not configured' }
+    if (!supabase) {
+      const all = Object.entries(staticCategoryProjects).flatMap(([catId, projects]) => projects.map((p, i) => ({ id: String(p.id), title: p.title, description: p.description, tech_stack: p.techStack, key_features: p.keyFeatures, repo_link: p.repoLink, live_link: p.liveLink, category_id: catId, display_order: i })))
+      const filtered = categoryId ? all.filter(p => p.category_id === categoryId) : all
+      return { success: true, data: filtered as unknown as Project[] }
+    }
     let query = supabase.from('projects').select('*').order('display_order', { ascending: true })
     
     if (categoryId) {

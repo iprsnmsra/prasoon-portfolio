@@ -3,11 +3,12 @@
 import { createAdminClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import { Resource } from '@/lib/types'
+import { freeResources as staticResources } from '@/data/projects'
 
 export async function getResources(): Promise<{ success: boolean; error?: string; data?: Resource[] }> {
   try {
     const supabase = createAdminClient()
-    if (!supabase) return { success: false, error: 'Supabase not configured' }
+    if (!supabase) return { success: true, data: staticResources.map((r, i) => ({ id: String(r.id), title: r.title, file_url: r.fileUrl, display_order: i })) as unknown as Resource[] }
     const { data, error } = await supabase.from('resources').select('*').order('display_order', { ascending: true })
 
     if (error) throw error

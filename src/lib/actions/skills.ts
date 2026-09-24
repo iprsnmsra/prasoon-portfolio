@@ -3,11 +3,12 @@
 import { createAdminClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import { Skill } from '@/lib/types'
+import { skills as staticSkills } from '@/data/projects'
 
 export async function getSkills(): Promise<{ success: boolean; error?: string; data?: Skill[] }> {
   try {
     const supabase = createAdminClient()
-    if (!supabase) return { success: false, error: 'Supabase not configured' }
+    if (!supabase) return { success: true, data: staticSkills.map((s, i) => ({ id: String(i+1), name: s.name, icon_url: s.iconUrl, display_order: i })) as unknown as Skill[] }
     const { data, error } = await supabase.from('skills').select('*').order('display_order', { ascending: true })
 
     if (error) throw error

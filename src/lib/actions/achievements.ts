@@ -3,11 +3,12 @@
 import { createAdminClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import { Achievement } from '@/lib/types'
+import { achievements as staticAchievements } from '@/data/projects'
 
 export async function getAchievements(): Promise<{ success: boolean; error?: string; data?: Achievement[] }> {
   try {
     const supabase = createAdminClient()
-    if (!supabase) return { success: false, error: 'Supabase not configured' }
+    if (!supabase) return { success: true, data: staticAchievements.map((a, i) => ({ id: String(a.id), type: a.type, title: a.title, description: a.description, perks: a.perks, image_url: a.imagePlaceholder, display_order: i })) as unknown as Achievement[] }
     const { data, error } = await supabase.from('achievements').select('*').order('display_order', { ascending: true })
 
     if (error) throw error
