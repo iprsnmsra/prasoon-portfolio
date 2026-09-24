@@ -63,8 +63,8 @@ body {
 
 /* Desktop custom cursor */
 @media (min-width: 768px) {
-  body, a, button {
-    cursor: none !important;
+  body, a, button, input, textarea, select {
+    cursor: url('/one-piece-cursor.cur'), auto !important;
   }
 }
 
