@@ -96,6 +96,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <BootSequence />
+        <CustomCursor />
         {children}
       </body>
     </html>

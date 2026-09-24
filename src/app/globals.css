@@ -38,6 +38,12 @@ html {
   overflow-x: hidden;
 }
 
+@media (min-width: 1024px) {
+  html {
+    zoom: 0.75;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -64,7 +70,7 @@ body {
 /* Desktop custom cursor */
 @media (min-width: 768px) {
   body, a, button, input, textarea, select {
-    cursor: url('/one-piece-cursor.cur'), auto !important;
+    cursor: none !important;
   }
 }
 
