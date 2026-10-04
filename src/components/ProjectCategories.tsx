@@ -3,7 +3,7 @@
 import { motion, Variants } from "framer-motion";
 import Link from "next/link";
 import { Code2, Box, Gamepad2, Sparkles, ArrowUpRight } from "lucide-react";
-import { projectCategories } from "../data/projects";
+import type { ProjectCategory } from "@/lib/types";
 
 const iconMap: Record<string, React.ReactNode> = {
   code: <Code2 size={32} />,
@@ -12,7 +12,7 @@ const iconMap: Record<string, React.ReactNode> = {
   sparkles: <Sparkles size={32} />,
 };
 
-export default function ProjectCategories() {
+export default function ProjectCategories({ categories }: { categories: ProjectCategory[] }) {
   const container: Variants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
@@ -39,7 +39,7 @@ export default function ProjectCategories() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {projectCategories.map((cat, index) => (
+          {categories.map((cat, index) => (
             <motion.div key={cat.id} variants={item}>
               <Link href={`/projects/${cat.id}`} className="block">
                 <motion.div
@@ -51,6 +51,11 @@ export default function ProjectCategories() {
                   <div className="absolute -bottom-4 -right-4 text-7xl font-black text-black/[0.03] group-hover:text-black/[0.06] transition-colors font-pt-serif">
                     {String(index + 1).padStart(2, "0")}
                   </div>
+                  {categories.length === 0 && (
+                    <p className="font-caveat text-xl text-gray-500 border border-dashed border-black/20 rounded-xl p-8">
+                      Projects are temporarily unavailable. Please check back soon.
+                    </p>
+                  )}
 
                   <div className="relative z-10">
                     <div className="flex items-center justify-between mb-6">

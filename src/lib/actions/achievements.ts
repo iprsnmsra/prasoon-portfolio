@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import { Achievement } from '@/lib/types'
 import { achievements as staticAchievements } from '@/data/projects'
+import { requireAdminSession } from '@/lib/auth'
 
 export async function getAchievements(): Promise<{ success: boolean; error?: string; data?: Achievement[] }> {
   try {
@@ -21,6 +22,7 @@ export async function getAchievements(): Promise<{ success: boolean; error?: str
 
 export async function createAchievement(formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('achievements').insert({
@@ -43,6 +45,7 @@ export async function createAchievement(formData: FormData): Promise<{ success: 
 
 export async function updateAchievement(id: string, formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('achievements').update({
@@ -65,6 +68,7 @@ export async function updateAchievement(id: string, formData: FormData): Promise
 
 export async function deleteAchievement(id: string): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('achievements').delete().eq('id', id)
@@ -77,4 +81,3 @@ export async function deleteAchievement(id: string): Promise<{ success: boolean;
     return { success: false, error: error.message }
   }
 }
-

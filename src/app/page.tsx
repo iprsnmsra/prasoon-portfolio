@@ -9,21 +9,35 @@ import ContactForm from "@/components/ContactForm";
 import Image from "next/image";
 import FluidBackground from "@/components/FluidBackground";
 import FloatingIcons from "@/components/FloatingIcons";
-import { personalInfo } from "@/data/projects";
+import CursorCharacter from "@/components/CursorCharacter";
+import { fetchAchievements, fetchCertifications, fetchExperiences, fetchPersonalInfo, fetchProjectCategories, fetchResources, fetchSkills } from "@/lib/data";
 
-export default function Home() {
+export const revalidate = 60;
+
+export default async function Home() {
+  const [personalInfo, experiences, categories, skills, certifications, resources, achievements] = await Promise.all([
+    fetchPersonalInfo(),
+    fetchExperiences(),
+    fetchProjectCategories(),
+    fetchSkills(),
+    fetchCertifications(),
+    fetchResources(),
+    fetchAchievements(),
+  ]);
+
   return (
     <main className="bg-white min-h-screen font-sans selection:bg-black selection:text-white relative">
       <FluidBackground />
       <FloatingIcons />
+      <CursorCharacter />
       <div className="relative z-10">
         <Navbar />
         <Hero />
-        <Experiences />
-        <ProjectCategories />
-        <SkillGrid />
-        <Resources />
-        <Achievements />
+        <Experiences experiences={experiences} />
+        <ProjectCategories categories={categories} />
+        <SkillGrid skills={skills} certifications={certifications} />
+        <Resources resources={resources} />
+        <Achievements achievements={achievements} />
         <ContactForm />
 
         <footer className="border-t border-black/10 mt-8 bg-white">
@@ -33,7 +47,7 @@ export default function Home() {
               <p className="font-jersey text-gray-400 text-xs">Designed & Engineered by Prasoon Mishra</p>
             </div>
             <div className="relative w-20 h-20 rounded-full border border-black/10 overflow-hidden bg-black/5">
-              <Image src={personalInfo.avatarUrl} alt={personalInfo.name} fill className="object-cover object-top grayscale hover:grayscale-0 transition-all duration-700" sizes="80px" />
+              <Image src={personalInfo.avatar_url} alt={personalInfo.name} fill className="object-cover object-top grayscale hover:grayscale-0 transition-all duration-700" sizes="80px" />
             </div>
             <div className="text-center md:text-right font-jersey text-xs text-gray-400 space-y-1">
               <p>{personalInfo.name}</p>

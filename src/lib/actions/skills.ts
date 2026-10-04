@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import { Skill } from '@/lib/types'
 import { skills as staticSkills } from '@/data/projects'
+import { requireAdminSession } from '@/lib/auth'
 
 export async function getSkills(): Promise<{ success: boolean; error?: string; data?: Skill[] }> {
   try {
@@ -21,6 +22,7 @@ export async function getSkills(): Promise<{ success: boolean; error?: string; d
 
 export async function createSkill(formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('skills').insert({
@@ -40,6 +42,7 @@ export async function createSkill(formData: FormData): Promise<{ success: boolea
 
 export async function updateSkill(id: string, formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('skills').update({
@@ -59,6 +62,7 @@ export async function updateSkill(id: string, formData: FormData): Promise<{ suc
 
 export async function deleteSkill(id: string): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('skills').delete().eq('id', id)
@@ -71,4 +75,3 @@ export async function deleteSkill(id: string): Promise<{ success: boolean; error
     return { success: false, error: error.message }
   }
 }
-

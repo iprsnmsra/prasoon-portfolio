@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
-import { createSessionToken, verifyPassword, hashPassword } from '@/lib/auth';
+import { createSessionToken, verifyPassword } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
@@ -14,8 +14,11 @@ export async function POST(request: Request) {
     let isValid = false;
 
     if (!supabase) {
-      // Supabase not configured — check against default password directly
-      isValid = password === 'Pr@s00n_CMS_2026!';
+      const configuredPassword = process.env.ADMIN_PASSWORD;
+      if (!configuredPassword) {
+        return NextResponse.json({ error: 'Admin authentication is not configured' }, { status: 503 });
+      }
+      isValid = password === configuredPassword;
     } else {
       const { data: settings } = await supabase
         .from('admin_settings')
@@ -24,9 +27,11 @@ export async function POST(request: Request) {
         .single();
 
       if (!settings) {
-        // No settings row — check against default password
-        const defaultPasswordHash = await hashPassword('Pr@s00n_CMS_2026!');
-        isValid = await verifyPassword(password, defaultPasswordHash);
+        const configuredPassword = process.env.ADMIN_PASSWORD;
+        if (!configuredPassword) {
+          return NextResponse.json({ error: 'Admin password is not configured' }, { status: 503 });
+        }
+        isValid = password === configuredPassword;
       } else {
         isValid = await verifyPassword(password, settings.password_hash);
       }
@@ -49,8 +54,8 @@ export async function POST(request: Request) {
     });
 
     return response;
-  } catch (error: any) {
-    console.error('Auth error:', error);
+  } catch (error) {
+    console.error('Auth error:', error instanceof Error ? error.message : error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

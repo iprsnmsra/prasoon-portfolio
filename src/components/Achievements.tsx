@@ -2,9 +2,9 @@
 
 import { motion, Variants } from "framer-motion";
 import { Trophy, Star } from "lucide-react";
-import { achievements } from "../data/projects";
+import type { Achievement } from "@/lib/types";
 
-export default function Achievements() {
+export default function Achievements({ achievements }: { achievements: Achievement[] }) {
   const container: Variants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.2 } },
@@ -27,6 +27,11 @@ export default function Achievements() {
             <div className="w-2 h-2 bg-black rounded-full animate-pulse-dot" />
             <span className="font-jersey text-sm text-gray-400 uppercase tracking-[0.3em]">Recognition & Wins</span>
           </div>
+          {achievements.length === 0 && (
+            <p className="font-caveat text-xl text-gray-500 border border-dashed border-black/20 rounded-xl p-8">
+              Achievements will appear here when they are published.
+            </p>
+          )}
           <h2 className="font-pt-serif text-5xl md:text-7xl font-black uppercase tracking-tighter text-black">
             My Technical<br />Achievements<span className="text-gray-300">.</span>
           </h2>

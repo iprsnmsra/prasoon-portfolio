@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import { Resource } from '@/lib/types'
 import { freeResources as staticResources } from '@/data/projects'
+import { requireAdminSession } from '@/lib/auth'
 
 export async function getResources(): Promise<{ success: boolean; error?: string; data?: Resource[] }> {
   try {
@@ -21,6 +22,7 @@ export async function getResources(): Promise<{ success: boolean; error?: string
 
 export async function createResource(formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('resources').insert({
@@ -40,6 +42,7 @@ export async function createResource(formData: FormData): Promise<{ success: boo
 
 export async function updateResource(id: string, formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('resources').update({
@@ -59,6 +62,7 @@ export async function updateResource(id: string, formData: FormData): Promise<{ 
 
 export async function deleteResource(id: string): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('resources').delete().eq('id', id)
@@ -71,4 +75,3 @@ export async function deleteResource(id: string): Promise<{ success: boolean; er
     return { success: false, error: error.message }
   }
 }
-
