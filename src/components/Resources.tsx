@@ -2,9 +2,9 @@
 
 import { motion, Variants } from "framer-motion";
 import { Download, FileText } from "lucide-react";
-import { freeResources } from "../data/projects";
+import type { Resource } from "@/lib/types";
 
-export default function Resources() {
+export default function Resources({ resources }: { resources: Resource[] }) {
   const container: Variants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.2 } },
@@ -29,7 +29,7 @@ export default function Resources() {
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {freeResources.map((resource) => (
+          {resources.map((resource) => (
             <motion.div
               key={resource.id}
               variants={item}
@@ -41,7 +41,7 @@ export default function Resources() {
                 <h3 className="font-pt-serif font-bold text-black text-base tracking-tight">{resource.title}</h3>
               </div>
               <motion.a
-                href={resource.fileUrl}
+                href={resource.file_url}
                 download
                 target="_blank"
                 rel="noopener noreferrer"
@@ -54,6 +54,11 @@ export default function Resources() {
             </motion.div>
           ))}
         </div>
+        {resources.length === 0 && (
+          <p className="font-caveat text-xl text-gray-500 border border-dashed border-black/20 rounded-xl p-8">
+            No downloadable resources are available yet.
+          </p>
+        )}
       </motion.div>
     </section>
   );

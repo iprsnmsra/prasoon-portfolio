@@ -344,3 +344,33 @@ body {
 .bg-float-icon:nth-child(4n+2) { animation: float-icon-2 11s ease-in-out infinite; }
 .bg-float-icon:nth-child(4n+3) { animation: float-icon-3 8s ease-in-out infinite; }
 .bg-float-icon:nth-child(4n)   { animation: float-icon-4 13s ease-in-out infinite; }
+
+.cursor-character {
+  position: fixed;
+  right: clamp(1rem, 4vw, 4rem);
+  bottom: 1rem;
+  width: clamp(120px, 15vw, 180px);
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.92;
+  filter: drop-shadow(0 12px 12px rgba(0, 0, 0, 0.12));
+}
+
+.cursor-character svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.character-face { fill: #f3c9a9; stroke: #111; stroke-width: 2; }
+.character-hair, .character-bandana, .character-coat { fill: #111; stroke: #111; stroke-width: 2; }
+.character-shirt { fill: #fff; stroke: #111; stroke-width: 2; }
+.character-neck { fill: #e9b58f; stroke: #111; stroke-width: 2; }
+.character-sword { fill: #d7d7d7; stroke: #111; stroke-width: 2; }
+.character-eyes ellipse { fill: #fff; stroke: #111; stroke-width: 2; }
+.character-pupil { fill: #111; }
+.character-brow, .character-mouth, .character-collar { fill: none; stroke: #111; stroke-width: 2; stroke-linecap: round; }
+
+@media (max-width: 767px), (prefers-reduced-motion: reduce) {
+  .cursor-character { display: none; }
+}

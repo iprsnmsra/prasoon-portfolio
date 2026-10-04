@@ -2,18 +2,17 @@
 
 import { motion, Variants } from "framer-motion";
 import Link from "next/link";
-import { use } from "react";
 import { MoveLeft, ExternalLink, Github } from "lucide-react";
-import { categoryProjects, projectCategories } from "@/data/projects";
+import { fetchProjectCategories, fetchProjects } from "@/lib/data";
 
 interface Props {
   params: Promise<{ category: string }>;
 }
 
-export default function ProjectCategoryPage({ params }: Props) {
-  const { category } = use(params);
-  const projects = categoryProjects[category] || [];
-  const categoryInfo = projectCategories.find((c) => c.id === category);
+export default async function ProjectCategoryPage({ params }: Props) {
+  const { category } = await params;
+  const [categories, projects] = await Promise.all([fetchProjectCategories(), fetchProjects(category)]);
+  const categoryInfo = categories.find((c) => c.id === category);
   const categoryTitle = categoryInfo?.title || category;
 
   const container: Variants = {
@@ -65,7 +64,7 @@ export default function ProjectCategoryPage({ params }: Props) {
               <div className="mb-6">
                 <h4 className="font-jersey text-sm font-bold text-black uppercase tracking-wider mb-3">Tech Stack Used</h4>
                 <div className="flex flex-wrap gap-2">
-                  {project.techStack.map((tech) => (
+                  {project.tech_stack.map((tech) => (
                     <span key={tech} className="font-jersey px-4 py-1.5 bg-black/5 border border-black/10 rounded-full text-xs text-gray-600">{tech}</span>
                   ))}
                 </div>
@@ -74,7 +73,7 @@ export default function ProjectCategoryPage({ params }: Props) {
               <div className="mb-8">
                 <h4 className="font-jersey text-sm font-bold text-black uppercase tracking-wider mb-3">Key Features</h4>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  {project.keyFeatures.map((feature) => (
+                  {project.key_features.map((feature) => (
                     <li key={feature} className="font-caveat flex items-start gap-2 text-lg text-gray-500">
                       <span className="text-black/30 mt-0.5">\u25B8</span>{feature}
                     </li>
@@ -83,13 +82,13 @@ export default function ProjectCategoryPage({ params }: Props) {
               </div>
 
               <div className="flex flex-wrap gap-3">
-                {project.repoLink && project.repoLink !== "#" && (
-                  <a href={project.repoLink} target="_blank" rel="noopener noreferrer" className="font-jersey flex items-center gap-2 px-5 py-2 border border-black/20 rounded-full text-xs uppercase tracking-widest text-black hover:bg-black hover:text-white transition-all duration-300">
+                {project.repo_link && project.repo_link !== "#" && (
+                  <a href={project.repo_link} target="_blank" rel="noopener noreferrer" className="font-jersey flex items-center gap-2 px-5 py-2 border border-black/20 rounded-full text-xs uppercase tracking-widest text-black hover:bg-black hover:text-white transition-all duration-300">
                     <Github size={14} /> Repo Link
                   </a>
                 )}
-                {project.liveLink && project.liveLink !== "" && (
-                  <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className="font-jersey flex items-center gap-2 px-5 py-2 bg-black text-white rounded-full text-xs uppercase tracking-widest hover:bg-gray-800 transition-all duration-300">
+                {project.live_link && project.live_link !== "" && (
+                  <a href={project.live_link} target="_blank" rel="noopener noreferrer" className="font-jersey flex items-center gap-2 px-5 py-2 bg-black text-white rounded-full text-xs uppercase tracking-widest hover:bg-gray-800 transition-all duration-300">
                     <ExternalLink size={14} /> Live Link
                   </a>
                 )}

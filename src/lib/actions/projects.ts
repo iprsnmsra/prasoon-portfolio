@@ -4,6 +4,18 @@ import { createAdminClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import { Project, ProjectCategory } from '@/lib/types'
 import { projectCategories as staticCategories, categoryProjects as staticCategoryProjects } from '@/data/projects'
+import { requireAdminSession } from '@/lib/auth'
+
+function parseList(value: FormDataEntryValue | null): string[] {
+  if (typeof value !== 'string' || !value.trim()) return []
+  try {
+    const parsed = JSON.parse(value)
+    if (Array.isArray(parsed)) return parsed.map(String).map((item) => item.trim()).filter(Boolean)
+  } catch {
+    // Admin clients from older versions submit comma-separated values.
+  }
+  return value.split(',').map((item) => item.trim()).filter(Boolean)
+}
 
 export async function getProjectCategories(): Promise<{ success: boolean; error?: string; data?: ProjectCategory[] }> {
   try {
@@ -45,11 +57,14 @@ export async function getProjects(categoryId?: string): Promise<{ success: boole
 
 export async function createCategory(formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('project_categories').insert({
       id: formData.get('id'),
-      name: formData.get('name'),
+      title: formData.get('title'),
+      description: formData.get('description'),
+      icon: formData.get('icon'),
       display_order: parseInt(formData.get('display_order') as string) || 0,
     })
 
@@ -65,10 +80,13 @@ export async function createCategory(formData: FormData): Promise<{ success: boo
 
 export async function updateCategory(id: string, formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('project_categories').update({
-      name: formData.get('name'),
+      title: formData.get('title'),
+      description: formData.get('description'),
+      icon: formData.get('icon'),
       display_order: parseInt(formData.get('display_order') as string) || 0,
     }).eq('id', id)
 
@@ -84,6 +102,7 @@ export async function updateCategory(id: string, formData: FormData): Promise<{ 
 
 export async function deleteCategory(id: string): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('project_categories').delete().eq('id', id)
@@ -100,11 +119,9 @@ export async function deleteCategory(id: string): Promise<{ success: boolean; er
 
 export async function createProject(formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
-    const techStackStr = formData.get('tech_stack') as string || ''
-    const keyFeaturesStr = formData.get('key_features') as string || ''
-    
-    const techStack = techStackStr ? techStackStr.split(',').map(s => s.trim()).filter(Boolean) : []
-    const keyFeatures = keyFeaturesStr ? keyFeaturesStr.split(',').map(s => s.trim()).filter(Boolean) : []
+    await requireAdminSession()
+    const techStack = parseList(formData.get('tech_stack'))
+    const keyFeatures = parseList(formData.get('key_features'))
 
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
@@ -112,9 +129,8 @@ export async function createProject(formData: FormData): Promise<{ success: bool
       category_id: formData.get('category_id'),
       title: formData.get('title'),
       description: formData.get('description'),
-      image_url: formData.get('image_url'),
-      project_url: formData.get('project_url'),
-      github_url: formData.get('github_url'),
+      repo_link: formData.get('repo_link'),
+      live_link: formData.get('live_link'),
       tech_stack: techStack,
       key_features: keyFeatures,
       display_order: parseInt(formData.get('display_order') as string) || 0,
@@ -132,11 +148,9 @@ export async function createProject(formData: FormData): Promise<{ success: bool
 
 export async function updateProject(id: string, formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
-    const techStackStr = formData.get('tech_stack') as string || ''
-    const keyFeaturesStr = formData.get('key_features') as string || ''
-    
-    const techStack = techStackStr ? techStackStr.split(',').map(s => s.trim()).filter(Boolean) : []
-    const keyFeatures = keyFeaturesStr ? keyFeaturesStr.split(',').map(s => s.trim()).filter(Boolean) : []
+    await requireAdminSession()
+    const techStack = parseList(formData.get('tech_stack'))
+    const keyFeatures = parseList(formData.get('key_features'))
 
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
@@ -144,9 +158,8 @@ export async function updateProject(id: string, formData: FormData): Promise<{ s
       category_id: formData.get('category_id'),
       title: formData.get('title'),
       description: formData.get('description'),
-      image_url: formData.get('image_url'),
-      project_url: formData.get('project_url'),
-      github_url: formData.get('github_url'),
+      repo_link: formData.get('repo_link'),
+      live_link: formData.get('live_link'),
       tech_stack: techStack,
       key_features: keyFeatures,
       display_order: parseInt(formData.get('display_order') as string) || 0,
@@ -164,6 +177,7 @@ export async function updateProject(id: string, formData: FormData): Promise<{ s
 
 export async function deleteProject(id: string): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('projects').delete().eq('id', id)
@@ -177,4 +191,3 @@ export async function deleteProject(id: string): Promise<{ success: boolean; err
     return { success: false, error: error.message }
   }
 }
-

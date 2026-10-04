@@ -27,6 +27,7 @@ const NAV_ITEMS = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  if (pathname === '/admin') return null;
 
   const handleLogout = async () => {
     try {

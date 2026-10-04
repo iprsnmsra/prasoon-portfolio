@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import { Certification } from '@/lib/types'
 import { certifications as staticCerts } from '@/data/projects'
+import { requireAdminSession } from '@/lib/auth'
 
 export async function getCertifications(): Promise<{ success: boolean; error?: string; data?: Certification[] }> {
   try {
@@ -21,6 +22,7 @@ export async function getCertifications(): Promise<{ success: boolean; error?: s
 
 export async function createCertification(formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('certifications').insert({
@@ -43,6 +45,7 @@ export async function createCertification(formData: FormData): Promise<{ success
 
 export async function updateCertification(id: string, formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('certifications').update({
@@ -65,6 +68,7 @@ export async function updateCertification(id: string, formData: FormData): Promi
 
 export async function deleteCertification(id: string): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('certifications').delete().eq('id', id)
@@ -77,4 +81,3 @@ export async function deleteCertification(id: string): Promise<{ success: boolea
     return { success: false, error: error.message }
   }
 }
-

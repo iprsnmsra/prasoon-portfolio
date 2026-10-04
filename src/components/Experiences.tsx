@@ -1,9 +1,9 @@
 "use client";
 
 import { motion, Variants } from "framer-motion";
-import { experiences } from "../data/projects";
+import type { Experience } from "@/lib/types";
 
-export default function Experiences() {
+export default function Experiences({ experiences }: { experiences: Experience[] }) {
   const container: Variants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } },
@@ -54,7 +54,7 @@ export default function Experiences() {
                   </div>
                   {/* Jersey 20 — date badge */}
                   <p className="font-jersey text-xs text-gray-400 uppercase tracking-wider mb-4 border border-black/10 inline-block px-3 py-1 rounded-full">
-                    {exp.joinDate}
+                    {exp.join_date}
                   </p>
                   {/* Caveat — description */}
                   <p className="font-caveat text-xl text-gray-500 leading-relaxed">{exp.description}</p>
@@ -64,16 +64,26 @@ export default function Experiences() {
                 <div className="flex-shrink-0">
                   <div className="w-[200px] h-[150px] bg-black/5 border border-dashed border-black/15 rounded-xl flex items-center justify-center text-center group-hover:border-black/25 transition-colors">
                     <div className="text-gray-400 text-xs">
-                      <div className="text-2xl mb-1">🖼️</div>
-                      {/* Jersey 20 — placeholder label */}
-                      <p className="font-jersey text-xs">Welcome Kit Image</p>
-                      <p className="font-jersey text-[10px] text-gray-300">{exp.company}</p>
+                      {exp.image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={exp.image_url} alt="" className="w-full h-full object-cover rounded-xl" />
+                      ) : (
+                        <>
+                          <div className="text-2xl mb-1">🖼️</div>
+                          <p className="font-jersey text-xs">No image available</p>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
             </motion.div>
           ))}
+          {experiences.length === 0 && (
+            <p className="font-caveat text-xl text-gray-500 border border-dashed border-black/20 rounded-xl p-8">
+              Experience details are being updated. Please check back soon.
+            </p>
+          )}
         </div>
       </motion.div>
     </section>

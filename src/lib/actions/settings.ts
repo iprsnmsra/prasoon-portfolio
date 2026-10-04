@@ -4,9 +4,11 @@ import { createAdminClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import { PersonalInfo } from '@/lib/types'
 import { hash, compare } from 'bcryptjs'
+import { requireAdminSession } from '@/lib/auth'
 
 export async function changePassword(formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const currentPassword = formData.get('current_password') as string
     const newPassword = formData.get('new_password') as string
 
@@ -53,6 +55,7 @@ export async function changePassword(formData: FormData): Promise<{ success: boo
 
 export async function getPersonalInfo(): Promise<{ success: boolean; error?: string; data?: PersonalInfo }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { data, error } = await supabase
@@ -93,4 +96,3 @@ export async function updatePersonalInfo(formData: FormData): Promise<{ success:
     return { success: false, error: error.message }
   }
 }
-

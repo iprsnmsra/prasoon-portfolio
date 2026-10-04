@@ -9,7 +9,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/admin', request.url));
   }
 
-  const ADMIN_SECRET = process.env.ADMIN_SECRET || 'fallback-dev-secret-do-not-use-in-production';
+  const ADMIN_SECRET = process.env.ADMIN_SECRET;
+  if (!ADMIN_SECRET) {
+    return NextResponse.redirect(new URL('/admin?error=configuration', request.url));
+  }
 
   try {
     const secretKey = new TextEncoder().encode(ADMIN_SECRET);

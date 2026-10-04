@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 import { Experience } from '@/lib/types'
 import { experiences as staticExperiences } from '@/data/projects'
+import { requireAdminSession } from '@/lib/auth'
 
 export async function getExperiences(): Promise<{ success: boolean; error?: string; data?: Experience[] }> {
   try {
@@ -21,6 +22,7 @@ export async function getExperiences(): Promise<{ success: boolean; error?: stri
 
 export async function createExperience(formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('experiences').insert({
@@ -44,6 +46,7 @@ export async function createExperience(formData: FormData): Promise<{ success: b
 
 export async function updateExperience(id: string, formData: FormData): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('experiences').update({
@@ -67,6 +70,7 @@ export async function updateExperience(id: string, formData: FormData): Promise<
 
 export async function deleteExperience(id: string): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAdminSession()
     const supabase = createAdminClient()
     if (!supabase) return { success: false, error: 'Supabase not configured' }
     const { error } = await supabase.from('experiences').delete().eq('id', id)
@@ -79,4 +83,3 @@ export async function deleteExperience(id: string): Promise<{ success: boolean; 
     return { success: false, error: error.message }
   }
 }
-

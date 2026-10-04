@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
 import crypto from 'crypto';
+import { requireAdminSession } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
+    await requireAdminSession();
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     let bucket = formData.get('bucket') as string | null;
@@ -14,6 +16,9 @@ export async function POST(request: Request) {
     
     if (!bucket) {
       bucket = 'portfolio-assets';
+    }
+    if (bucket !== 'portfolio-assets') {
+      return NextResponse.json({ error: 'Invalid storage bucket' }, { status: 400 });
     }
 
     const supabase = createAdminClient();
@@ -27,7 +32,7 @@ export async function POST(request: Request) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from(bucket)
       .upload(filename, buffer, {
         contentType: file.type || 'application/octet-stream',
@@ -42,8 +47,9 @@ export async function POST(request: Request) {
       .getPublicUrl(filename);
 
     return NextResponse.json({ url: publicUrlData.publicUrl, success: true });
-  } catch (error: any) {
-    console.error('Upload error:', error);
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Internal server error';
+    console.error('Upload error:', message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

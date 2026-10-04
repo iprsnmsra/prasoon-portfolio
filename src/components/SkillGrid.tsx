@@ -2,9 +2,9 @@
 
 import { motion, Variants } from "framer-motion";
 import { ExternalLink, Award } from "lucide-react";
-import { skills, certifications } from "../data/projects";
+import type { Certification, Skill } from "@/lib/types";
 
-export default function SkillGrid() {
+export default function SkillGrid({ skills, certifications }: { skills: Skill[]; certifications: Certification[] }) {
   const container: Variants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.05 } },
@@ -39,7 +39,8 @@ export default function SkillGrid() {
                 className="bg-[#f5f5f5] border border-black/10 rounded-xl p-4 flex flex-col items-center gap-3 group hover:border-black/20 transition-all duration-300"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={skill.iconUrl} alt={skill.name} className="w-10 h-10 object-contain grayscale group-hover:grayscale-0 transition-all duration-300" loading="lazy" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={skill.icon_url} alt={skill.name} className="w-10 h-10 object-contain grayscale group-hover:grayscale-0 transition-all duration-300" loading="lazy" />
                 <span className="font-jersey text-xs text-gray-500 text-center leading-tight">{skill.name}</span>
               </motion.div>
             ))}
@@ -60,19 +61,19 @@ export default function SkillGrid() {
                 className="bg-[#f5f5f5] border border-black/10 rounded-xl overflow-hidden group hover:border-black/20 transition-all duration-300"
               >
                 <div className="w-full h-32 bg-black/5 flex items-center justify-center border-b border-black/5">
-                  <div className="text-gray-400 text-xs text-center">
-                    <div className="text-2xl mb-1">\uD83D\uDCDC</div>
-                    <p className="font-jersey">Cert Image {cert.id}</p>
-                  </div>
+                  {cert.image_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={cert.image_url} alt={`${cert.title} certificate`} className="w-full h-full object-cover" />
+                  ) : <span className="text-gray-400 text-xs font-jersey">Certificate preview unavailable</span>}
                 </div>
                 <div className="p-4">
                   <p className="font-pt-serif font-bold text-black text-sm mb-1">{cert.title}</p>
                   <p className="font-jersey text-gray-400 text-xs">{cert.issuer}</p>
                   <p className="font-jersey text-gray-300 text-[10px] mt-1">{cert.date}</p>
                   <div className="mt-3">
-                    <a href={cert.credentialUrl} target="_blank" rel="noopener noreferrer" className="font-jersey flex items-center gap-1 text-xs text-gray-400 hover:text-black transition-colors">
+                    {cert.credential_url && cert.credential_url !== "#" && <a href={cert.credential_url} target="_blank" rel="noopener noreferrer" className="font-jersey flex items-center gap-1 text-xs text-gray-400 hover:text-black transition-colors">
                       <ExternalLink size={12} /> View Credential
-                    </a>
+                    </a>}
                   </div>
                 </div>
               </motion.div>
