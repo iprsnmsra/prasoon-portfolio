@@ -3,34 +3,49 @@
 import { useEffect, useRef, useState } from "react";
 
 export default function CursorCharacter() {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: 0.5, y: 0.5 });
   const frame = useRef<number | null>(null);
-  const target = useRef({ x: 0, y: 0 });
+  const target = useRef({ x: 0.5, y: 0.5 });
+  const current = useRef({ x: 0.5, y: 0.5 });
 
   useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) return;
+
     const onPointerMove = (event: PointerEvent) => {
-      target.current = { x: event.clientX, y: event.clientY };
-      if (frame.current === null) {
-        frame.current = window.requestAnimationFrame(() => {
-          setPosition(target.current);
-          frame.current = null;
-        });
-      }
+      target.current = {
+        x: event.clientX / window.innerWidth,
+        y: event.clientY / window.innerHeight,
+      };
+    };
+
+    const animate = () => {
+      current.current.x += (target.current.x - current.current.x) * 0.08;
+      current.current.y += (target.current.y - current.current.y) * 0.08;
+      setPosition({ ...current.current });
+      frame.current = window.requestAnimationFrame(animate);
     };
 
     window.addEventListener("pointermove", onPointerMove, { passive: true });
+    frame.current = window.requestAnimationFrame(animate);
     return () => {
       window.removeEventListener("pointermove", onPointerMove);
       if (frame.current !== null) window.cancelAnimationFrame(frame.current);
     };
   }, []);
 
-  const viewport = typeof window === "undefined" ? { width: 1, height: 1 } : { width: window.innerWidth, height: window.innerHeight };
-  const eyeX = Math.max(-4, Math.min(4, (position.x / viewport.width - 0.5) * 8));
-  const eyeY = Math.max(-3, Math.min(3, (position.y / viewport.height - 0.5) * 6));
+  const eyeX = (position.x - 0.5) * 8;
+  const eyeY = (position.y - 0.5) * 6;
+  const followX = (position.x - 0.5) * 18;
+  const followY = (position.y - 0.5) * -10;
+  const tilt = (position.x - 0.5) * 5;
 
   return (
-    <div className="cursor-character" aria-hidden="true">
+    <div
+      className="cursor-character"
+      aria-hidden="true"
+      style={{ transform: `translate3d(${followX}px, ${followY}px, 0) rotate(${tilt}deg)` }}
+    >
       <svg viewBox="0 0 180 220" role="presentation">
         <path className="character-sword" d="M145 196L174 52l-9-8-31 144z" />
         <path className="character-coat" d="M42 218c4-36 13-56 34-69h29c21 13 30 33 34 69z" />
